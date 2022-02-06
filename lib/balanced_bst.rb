@@ -87,7 +87,7 @@ class Node
     return 'Error: value not in tree'
   end
 
-  def self.level_order(node, array = [], queue = [])
+  def level_order(node = self, array = [], queue = [])
     if block_given?
       return array if node.nil?
       array.push(node.data)
@@ -103,7 +103,7 @@ class Node
     end
   end
 
-  def inorder(node, array = [])
+  def inorder(node = self, array = [])
     if block_given?
       return array if node.nil?
 
@@ -117,7 +117,7 @@ class Node
     end
   end
 
-  def preorder(node, array = [])
+  def preorder(node = self, array = [])
     if block_given?
       return array if node.nil?
 
@@ -131,7 +131,7 @@ class Node
     end
   end
 
-  def postorder(node, array = [])
+  def postorder(node = self, array = [])
     if block_given?
       return array if node.nil?
 
@@ -170,6 +170,7 @@ class Node
 
   # recursively check the height of root node and all sub-nodes, returning false if any differ in height by > 1
   def balanced?
+    # binding.pry
     left_height = self.left.nil? ? 0 : height(self.left)
     right_height = self.right.nil? ? 0 : height(self.right)
     return false if (left_height - right_height).abs > 1
@@ -205,6 +206,10 @@ class Tree < Node
     return Tree.new(sorted_array)
   end
 
+  def balanced?
+    return @root.balanced?
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -212,15 +217,24 @@ class Tree < Node
   end
 end
 
-# array = (4..9).to_a
-array = (Array.new(150) { rand(5..1000) })
+# driver script
+array = (Array.new(15) { rand(1..100) })
 tree = Tree.new(array)
-tree.root.insert(1)
-tree.root.insert(2)
-tree.root.insert(3)
 tree.pretty_print
-balance = tree.root.balanced?
-p balance
+p "Balanced?: #{tree.balanced?}"
+p "Level-order: #{tree.root.level_order}"
+p "Pre-order: #{tree.root.preorder}"
+p "Post-order: #{tree.root.postorder}"
+p "In-order: #{tree.root.inorder}"
+tree.root.insert(103)
+tree.root.insert(102)
+tree.root.insert(104)
+tree.pretty_print
+p "Balanced?: #{tree.balanced?}"
 tree = tree.rebalance
 tree.pretty_print
-p tree.root.balanced?
+p "Balanced?: #{tree.balanced?}"
+p "Level-order: #{tree.root.level_order}"
+p "Pre-order: #{tree.root.preorder}"
+p "Post-order: #{tree.root.postorder}"
+p "In-order: #{tree.root.inorder}"
