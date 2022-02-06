@@ -103,7 +103,7 @@ class Node
     end
   end
 
-  def self.inorder(node, array = [])
+  def inorder(node, array = [])
     if block_given?
       return array if node.nil?
 
@@ -117,7 +117,7 @@ class Node
     end
   end
 
-  def self.preorder(node, array = [])
+  def preorder(node, array = [])
     if block_given?
       return array if node.nil?
 
@@ -131,7 +131,7 @@ class Node
     end
   end
 
-  def self.postorder(node, array = [])
+  def postorder(node, array = [])
     if block_given?
       return array if node.nil?
 
@@ -179,7 +179,7 @@ class Node
   end
 end
 
-class Tree
+class Tree < Node
   attr_accessor :root
 
   def initialize(array)
@@ -198,6 +198,13 @@ class Tree
     return node
   end
 
+  def rebalance
+    return self if self.root.balanced?
+
+    sorted_array = inorder(self.root)
+    return Tree.new(sorted_array)
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -206,8 +213,14 @@ class Tree
 end
 
 # array = (4..9).to_a
-array = (Array.new(15) { rand(5..100) })
+array = (Array.new(150) { rand(5..1000) })
 tree = Tree.new(array)
+tree.root.insert(1)
+tree.root.insert(2)
+tree.root.insert(3)
 tree.pretty_print
 balance = tree.root.balanced?
 p balance
+tree = tree.rebalance
+tree.pretty_print
+p tree.root.balanced?
