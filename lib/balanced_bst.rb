@@ -146,7 +146,6 @@ class Node
   end
 
   def height(node, height = 0)
-    # binding.pry
     # base case: both children of a node are nil
     if node.left.nil? && node.right.nil?
       return height
@@ -158,11 +157,9 @@ class Node
 
       return (left_height > right_height ? left_height + 1 : right_height + 1)
     end
-
   end
 
   def depth(node, compare_node = self, depth = 0)
-    #binding.pry
     return depth if node == compare_node
 
     depth += 1
@@ -171,13 +168,10 @@ class Node
     return (left_depth.nil? ? right_depth : left_depth)
   end
 
+  # recursively check the height of root node and all sub-nodes, returning false if any differ in height by > 1
   def balanced?
-    #binding.pry
     left_height = self.left.nil? ? 0 : height(self.left)
     right_height = self.right.nil? ? 0 : height(self.right)
-    binding.pry
-    p left_height
-    p right_height
     return false if (left_height - right_height).abs > 1
     self.left.balanced? unless self.left.nil?
     self.right.balanced? unless self.right.nil?
@@ -211,10 +205,9 @@ class Tree
   end
 end
 
-# array = Array.new(15) { rand(0..100) }
-array = (2..9).to_a
+# array = (4..9).to_a
+array = (Array.new(15) { rand(5..100) })
 tree = Tree.new(array)
-tree.root.insert(1)
 tree.pretty_print
-
-p height
+balance = tree.root.balanced?
+p balance
