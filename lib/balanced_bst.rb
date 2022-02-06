@@ -144,6 +144,23 @@ class Node
       end
     end
   end
+
+  def self.height(node, left_height = 0, right_height = 0)
+    return (left_height > right_height ? left_height : right_height) if node.left.nil? && node.right.nil?
+
+    height(node.left, left_height + 1, right_height) unless node.left.nil?
+    height(node.right, left_height, right_height + 1) unless node.right.nil?
+  end
+
+  def depth(node, compare_node = self, depth = 0)
+    #binding.pry
+    return depth if node == compare_node
+
+    depth += 1
+    left_depth = depth(node, compare_node.left, depth) unless compare_node.left.nil?
+    right_depth = depth(node, compare_node.right, depth) unless compare_node.right.nil?
+    return (left_depth.nil? ? right_depth : left_depth)
+  end
 end
 
 class Tree
@@ -176,11 +193,5 @@ end
 array = (1..9).to_a
 tree = Tree.new(array)
 tree.pretty_print
-level_order = Node.level_order(tree.root)
-in_order = Node.inorder(tree.root)
-pre_order = Node.preorder(tree.root)
-post_order = Node.postorder(tree.root)
-p level_order
-p in_order
-p pre_order
-p post_order
+depth = tree.root.depth(tree.root.right.right.left)
+p depth
