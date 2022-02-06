@@ -103,7 +103,7 @@ class Node
     end
   end
 
-  def self.in_order(node, array = [])
+  def self.inorder(node, array = [])
     if block_given?
       return array if node.nil?
 
@@ -111,8 +111,36 @@ class Node
       array.push(node.data)
       yield(node.right, array)
     else
-      level_order(node, array) do |yield_node, yield_array|
-        level_order(yield_node, yield_array)
+      inorder(node, array) do |yield_node, yield_array|
+        inorder(yield_node, yield_array)
+      end
+    end
+  end
+
+  def self.preorder(node, array = [])
+    if block_given?
+      return array if node.nil?
+
+      array.push(node.data)
+      yield(node.left, array)
+      yield(node.right, array)
+    else
+      preorder(node, array) do |yield_node, yield_array|
+        preorder(yield_node, yield_array)
+      end
+    end
+  end
+
+  def self.postorder(node, array = [])
+    if block_given?
+      return array if node.nil?
+
+      yield(node.left, array)
+      yield(node.right, array)
+      array.push(node.data)
+    else
+      postorder(node, array) do |yield_node, yield_array|
+        postorder(yield_node, yield_array)
       end
     end
   end
@@ -149,4 +177,10 @@ array = (1..9).to_a
 tree = Tree.new(array)
 tree.pretty_print
 level_order = Node.level_order(tree.root)
+in_order = Node.inorder(tree.root)
+pre_order = Node.preorder(tree.root)
+post_order = Node.postorder(tree.root)
 p level_order
+p in_order
+p pre_order
+p post_order
