@@ -145,11 +145,20 @@ class Node
     end
   end
 
-  def self.height(node, left_height = 0, right_height = 0)
-    return (left_height > right_height ? left_height : right_height) if node.left.nil? && node.right.nil?
+  def height(node, height = 0)
+    # binding.pry
+    # base case: both children of a node are nil
+    if node.left.nil? && node.right.nil?
+      return height
+    else
+      left_height = height(node.left, height) unless node.left.nil?
+      right_height = height(node.right, height) unless node.right.nil?
+      return left_height + 1 if right_height.nil?
+      return right_height + 1 if left_height.nil?
 
-    height(node.left, left_height + 1, right_height) unless node.left.nil?
-    height(node.right, left_height, right_height + 1) unless node.right.nil?
+      return (left_height > right_height ? left_height + 1 : right_height + 1)
+    end
+
   end
 
   def depth(node, compare_node = self, depth = 0)
@@ -160,6 +169,19 @@ class Node
     left_depth = depth(node, compare_node.left, depth) unless compare_node.left.nil?
     right_depth = depth(node, compare_node.right, depth) unless compare_node.right.nil?
     return (left_depth.nil? ? right_depth : left_depth)
+  end
+
+  def balanced?
+    #binding.pry
+    left_height = self.left.nil? ? 0 : height(self.left)
+    right_height = self.right.nil? ? 0 : height(self.right)
+    binding.pry
+    p left_height
+    p right_height
+    return false if (left_height - right_height).abs > 1
+    self.left.balanced? unless self.left.nil?
+    self.right.balanced? unless self.right.nil?
+    return true
   end
 end
 
@@ -190,8 +212,9 @@ class Tree
 end
 
 # array = Array.new(15) { rand(0..100) }
-array = (1..9).to_a
+array = (2..9).to_a
 tree = Tree.new(array)
+tree.root.insert(1)
 tree.pretty_print
-depth = tree.root.depth(tree.root.right.right.left)
-p depth
+
+p height
